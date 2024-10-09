@@ -1,84 +1,90 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const { parse } = require('querystring'); // To parse form data
+const { format } = require('date-fns');
 
-// Define log file path
-const logFilePath = path.join(__dirname, 'logs', 'server.log');
+const getLogFilePath = () => {
+    const today = format(new Date(), 'yyyy-MM-dd'); // Format: YYYY-MM-DD
+    const logDir = path.join(__dirname, 'logs');
 
-// Create server
-const server = http.createServer((req, res) => {
-    const startTime = process.hrtime(); // Start timing the request
-    const logData = {
-        timestamp: new Date().toISOString(),
+    if (!fs.existsSync(logDir)) {
+        fs.mkdirSync(logDir);
+    }
+
+    return path.join(logDir, `server-${today}.log`);
+};
+
+const logToFile = (data) => {
+    const logFilePath = getLogFilePath();
+
+    fs.appendFileSync(logFilePath, `${data}\n`, (err) => {
+        if (err) throw err;
+    });
+};
+
+const logRequest = (req) => {
+    const userAgent = req.headers['user-agent'] || 'Unknown User-Agent';
+    const acceptLanguage = req.headers['accept-language'] || 'Unknown Language';
+    const deviceInfo = {
         method: req.method,
         url: req.url,
-        headers: req.headers,
+        userAgent: userAgent,
+        acceptLanguage: acceptLanguage,
+        device: req.headers['sec-ch-ua-platform'] || 'Unknown Device',
+        mobile: req.headers['sec-ch-ua-mobile'] || 'Unknown Mobile Status',
+        browser: req.headers['sec-ch-ua'] || 'Unknown Browser',
     };
 
+    const logEntry = `[${new Date().toISOString()}] ${deviceInfo.method} request to ${deviceInfo.url}, ` +
+        `Browser: ${deviceInfo.browser}, Device: ${deviceInfo.device}, ` +
+        `Mobile: ${deviceInfo.mobile}, Language: ${deviceInfo.acceptLanguage}, ` +
+        `User-Agent: ${deviceInfo.userAgent}`;
+
+    logToFile(logEntry);
+};
+
+const server = http.createServer((req, res) => {
+    logRequest(req);
+
     if (req.method === 'GET') {
-        // Serve the HTML form
-        const htmlForm = `
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Data Collection Form</title>
-            </head>
-            <body>
-                <h1>Enter Your Details</h1>
-                <form method="POST" action="/submit">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required><br><br>
-                    <label for="surname">Surname:</label>
-                    <input type="text" id="surname" name="surname" required><br><br>
-                    <label for="birthday">Birthday:</label>
-                    <input type="date" id="birthday" name="birthday" required><br><br>
-                    <input type="submit" value="Submit">
-                </form>
-            </body>
-            </html>
-        `;
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end(htmlForm);
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.write(`
+      <form action="/submit" method="POST">
+        Name: <input type="text" name="name"><br>
+        Surname: <input type="text" name="surname"><br>
+        Birthday: <input type="date" name="birthday"><br>
+        <input type="submit" value="Submit">
+      </form>
+    `);
+        res.end();
     } else if (req.method === 'POST' && req.url === '/submit') {
         let body = '';
 
-        // Collect the data from the form
         req.on('data', chunk => {
-            body += chunk.toString(); // Convert Buffer to string
+            body += chunk.toString();
         });
 
         req.on('end', () => {
-            const parsedData = parse(body); // Parse the form data
+            const parsedData = new URLSearchParams(body);
+            const name = parsedData.get('name');
+            const surname = parsedData.get('surname');
+            const birthday = parsedData.get('birthday');
 
-            // Create a meaningful log entry
-            const elapsedTime = process.hrtime(startTime); // Calculate elapsed time
-            const responseTime = (elapsedTime[0] * 1e9 + elapsedTime[1]) / 1e6; // Convert to milliseconds
+            const logEntry = `[${new Date().toISOString()}] Form Submission - Name: ${name}, Surname: ${surname}, Birthday: ${birthday}, ` +
+                `User-Agent: ${req.headers['user-agent']}`;
+            logToFile(logEntry);
 
-            const logMessage = `${logData.timestamp} - ${logData.method} ${logData.url} - Status: 200 - Response Time: ${responseTime.toFixed(3)}ms - User Agent: ${logData.headers['user-agent']} - Name: ${parsedData.name} - Surname: ${parsedData.surname} - Birthday: ${parsedData.birthday}\n`;
-
-            // Append the log message to the log file
-            fs.appendFile(logFilePath, logMessage, (err) => {
-                if (err) {
-                    console.error('Error writing to log file:', err);
-                }
-            });
-
-            // Send a response back to the user
-            res.writeHead(200, {'Content-Type': 'text/plain'});
-            res.end('Thank you for submitting your details!');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.write('Thank you for submitting your data!');
+            res.end();
         });
     } else {
-        // Handle 404 Not Found
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.end('404 Not Found');
+        res.writeHead(404, { 'Content-Type': 'text/html' });
+        res.write('Page not found');
+        res.end();
     }
 });
 
-// Start the server
-const PORT = 3000;
-server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}/`);
+server.listen(3000, () => {
+    console.log('Server running at http://localhost:3000/');
 });

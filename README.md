@@ -1,6 +1,15 @@
-## Overview
+# Bash Log Management Web Server
 
-**This project contains a Node.js web server that generates daily log files and a log rotation script to manage those logs.**
+This project is a web server built with Node.js that collects user data through a form, logs requests and form submissions, and generates daily reports based on the logged data.
+
+## Features
+
+- **User Data Collection**: Gathers user information such as name, surname, and birthday.
+- **Logging**: Logs all HTTP requests and form submissions to separate log files named with the date.
+- **Log Rotation**: Automatically rotates log files daily.
+- **Reporting**: Generates daily reports summarizing user visits, unique visitors, form submissions, and browser statistics.
+- **Data Analysis**: Analyzes logged data to provide insights on user behavior and technology usage.
+
 
 ```bash
 Imagine you are part of a system administration team responsible for managing a web server. 
@@ -26,4 +35,10 @@ chmod +x scripts/setup_crontab.sh
 
 ```bash
 node web-server/server.js
+```
+
+## How to get reports manually
+
+```bash
+node web-server/reports.js
 ```

@@ -1,0 +1,10 @@
+[2024-10-09T22:15:08.930Z] Name: asdasdas, Surname: dasdasd, Birthday: 0003-03-31, User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0
+[2024-10-09T22:18:06.646Z] GET request to /, User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0
+[2024-10-09T22:18:06.891Z] GET request to /, User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0
+[2024-10-09T22:18:07.072Z] GET request to /, User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0
+[2024-10-09T22:19:18.579Z] GET request to /, User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0
+[2024-10-09T22:19:26.376Z] GET request to /, Browser: Unknown Browser, Device: Unknown Device, Mobile: Unknown Mobile Status, Language: en-US,en;q=0.5, User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0
+[2024-10-09T22:19:26.678Z] GET request to /, Browser: Unknown Browser, Device: Unknown Device, Mobile: Unknown Mobile Status, Language: en-US,en;q=0.5, User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0
+[2024-10-09T22:19:53.535Z] GET request to /, Browser: Unknown Browser, Device: Unknown Device, Mobile: Unknown Mobile Status, Language: en-US,en;q=0.5, User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0
+[2024-10-09T22:20:03.267Z] POST request to /submit, Browser: Unknown Browser, Device: Unknown Device, Mobile: Unknown Mobile Status, Language: en-US,en;q=0.5, User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0
+[2024-10-09T22:20:03.269Z] Form Submission - Name: asdasdas, Surname: dasdasd, Birthday: 0003-03-31, User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0
